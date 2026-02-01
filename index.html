@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base target="_blank">
+    <title>Start</title>
+    <link rel="icon" href="file:///C:/Program Files (x86)/Microsoft/Edge/Application/start_icon.png" type="image/x-icon">
+    <style>
+        :root { --bg-color: #f5f5f5; --text-color: #333; --card-bg: #ffffff; --border-color: #ddd; --primary-color: #4dabf7; --hover-color: #339af0; --header-bg: #ffffff; --shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .dark-mode { --bg-color: #1a1a1a; --text-color: #e0e0e0; --card-bg: #2d2d2d; --border-color: #444; --primary-color: #5c9edc; --hover-color: #4a8bc2; --header-bg: #2d2d2d; --shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
+        * { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; box-sizing: border-box; }
+        body { margin: 0; font-family: "楷体", sans-serif; background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; }
+        .header { background-color: var(--header-bg); padding: 20px 0; box-shadow: var(--shadow); position: relative; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .main-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 20px; }
+        .welcome-section { text-align: center; margin-bottom: 40px; }
+        .search-section { width: 100%; max-width: 800px; margin-bottom: 40px; }
+        .links-section { width: 100%; max-width: 1000px; text-align: center; }
+        h1 { margin: 0 0 20px 0; font-size: 2.5rem; color: var(--text-color); }
+        .search-form { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        input[type="text"] { width: 100%; max-width: 600px; height: 50px; font-size: 20px; padding: 15px; border: 1px solid var(--border-color); border-radius: 5px; background-color: var(--card-bg); color: var(--text-color); }
+        input[type="submit"] { height: 50px; padding: 15px 30px; font-size: 20px; background-color: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; line-height: 1; }
+        input[type="submit"]:hover { background-color: var(--hover-color); }
+        .note { color: #ff6b6b; font-size: 18px; text-align: center; }
+        a { text-decoration: none; color: var(--primary-color); margin: 10px; font-size: 18px; transition: color 0.3s ease; display: inline-block; }
+        a:hover { color: var(--hover-color); }
+        #settings-btn { position: fixed; top: 20px; right: 20px; background: rgba(0, 0, 0, 0.1); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; transition: all 0.3s ease; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        #settings-btn:hover { background: rgba(0, 0, 0, 0.2); transform: rotate(90deg); }
+        #theme-toggle { position: fixed; top: 20px; right: 70px; background: rgba(0, 0, 0, 0.1); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; transition: all 0.3s ease; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        #theme-toggle:hover { background: rgba(0, 0, 0, 0.2); }
+        #settings-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999; }
+        .settings-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card-bg); padding: 20px; border-radius: 10px; width: 80%; max-width: 800px; max-height: 80%; overflow-y: auto; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); color: var(--text-color); }
+        .settings-tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; background: none; border: none; cursor: pointer; font-size: 16px; border-bottom: 2px solid transparent; color: var(--text-color); }
+        .tab-btn.active { border-bottom: 2px solid var(--primary-color); color: var(--primary-color); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .link-group { margin-bottom: 20px; border: 1px solid var(--border-color); padding: 15px; border-radius: 5px; background-color: var(--card-bg); }
+        .link-group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .link-group-title { font-weight: bold; font-size: 18px; color: var(--text-color); }
+        .link-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border-color); color: var(--text-color); }
+        .link-item:last-child { border-bottom: none; }
+        .btn { padding: 5px 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 3px; cursor: pointer; margin-left: 5px; color: #333; }
+        .btn-danger { background: #ff6b6b; color: white; border-color: #ff5252; }
+        .btn-primary { background: var(--primary-color); color: white; border-color: var(--hover-color); }
+        .btn-success { background: #51cf66; color: white; border-color: #40c057; }
+        .btn-warning { background: #ffa94d; color: white; border-color: #ff922b; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: var(--text-color); }
+        .form-control { width: 600px; max-width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 16px; box-sizing: border-box; background-color: var(--card-bg); color: var(--text-color); }
+        select.form-control { height: 50px; font-size: 18px; padding: 0 15px; }
+        .search-engine-option { display: flex; align-items: center; margin-bottom: 10px; }
+        .search-engine-option input { margin-right: 10px; }
+        .link-group-display { margin-bottom: 20px; text-align: center; }
+        .link-group-display h4 { margin-bottom: 10px; color: var(--text-color); border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+        .group-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); color: var(--text-color); }
+        .group-item:last-child { border-bottom: none; }
+        .group-actions { display: flex; }
+        .group-link-count { color: #666; font-size: 14px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1001; }
+        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card-bg); padding: 20px; border-radius: 10px; width: 400px; max-width: 90%; color: var(--text-color); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .modal-title { font-size: 18px; font-weight: bold; color: var(--text-color); }
+        .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-color); }
+        .modal-footer { text-align: right; margin-top: 20px; }
+        .tab-content .form-group { display: flex; flex-direction: column; align-items: center; }
+        .tab-content .form-group label { align-self: flex-start; margin-left: calc((100% - 600px) / 2); max-width: 600px; width: 100%; }
+        .theme-option { display: flex; align-items: center; margin-bottom: 15px; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background-color: var(--card-bg); }
+        .theme-option input { margin-right: 10px; }
+        .theme-preview { width: 40px; height: 40px; border-radius: 5px; margin-right: 15px; border: 1px solid var(--border-color); }
+        .light-preview { background: linear-gradient(135deg, #f5f5f5 50%, #ffffff 50%); }
+        .dark-preview { background: linear-gradient(135deg, #1a1a1a 50%, #2d2d2d 50%); }
+        .link-move-group { display: flex; align-items: center; margin-left: 10px; }
+        .link-move-group select { margin-right: 5px; padding: 3px; border: 1px solid var(--border-color); border-radius: 3px; background-color: var(--card-bg); color: var(--text-color); }
+        .link-order-controls { display: flex; align-items: center; margin-left: 10px; }
+        .link-order-controls button { margin: 0 2px; padding: 3px 6px; }
+        .data-management-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .link-edit-form { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background-color: var(--card-bg); }
+        .link-edit-row { display: flex; gap: 10px; align-items: center; }
+        .link-edit-input { flex: 1; padding: 5px; border: 1px solid var(--border-color); border-radius: 3px; background-color: var(--card-bg); color: var(--text-color); }
+        .import-option { display: flex; align-items: center; margin-bottom: 10px; }
+        .import-option input { margin-right: 10px; }
+        .file-input-container { display: flex; flex-direction: column; align-items: center; margin: 15px 0; }
+        .file-input-label { display: inline-block; padding: 10px 20px; background-color: var(--primary-color); color: white; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; text-align: center; margin-bottom: 10px; }
+        .file-input-label:hover { background-color: var(--hover-color); }
+        .file-input { display: none; }
+        .file-name { margin-top: 5px; font-size: 14px; color: var(--text-color); }
+        .data-management-section { margin-bottom: 25px; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--card-bg); }
+        .data-management-section h4 { margin-top: 0; margin-bottom: 15px; color: var(--text-color); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .data-management-section p { margin-bottom: 15px; line-height: 1.5; }
+        .import-options { margin: 15px 0; padding: 12px; background-color: rgba(0, 0, 0, 0.03); border-radius: 6px; border-left: 4px solid var(--primary-color); }
+        .import-option { display: flex; align-items: flex-start; margin-bottom: 10px; padding: 8px; border-radius: 4px; transition: background-color 0.2s ease; }
+        .import-option:hover { background-color: rgba(0, 0, 0, 0.05); }
+        .import-option input { margin-right: 10px; margin-top: 2px; }
+        .import-option label { flex: 1; line-height: 1.4; }
+        .file-input-container { display: flex; flex-direction: column; align-items: center; margin: 20px 0; padding: 20px; border: 2px dashed var(--border-color); border-radius: 8px; background-color: rgba(0, 0, 0, 0.02); transition: border-color 0.3s ease; }
+        .file-input-container:hover { border-color: var(--primary-color); }
+        .file-input-label { display: inline-block; padding: 12px 24px; background-color: var(--primary-color); color: white; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease; text-align: center; margin-bottom: 10px; font-weight: 500; }
+        .file-input-label:hover { background-color: var(--hover-color); }
+        .file-input { display: none; }
+        .file-name { margin-top: 8px; font-size: 14px; color: var(--text-color); text-align: center; }
+        .import-button-container { text-align: center; margin-top: 15px; }
+        .danger-zone { margin-top: 30px; padding: 15px; border: 1px solid #ff6b6b; border-radius: 8px; background-color: rgba(255, 107, 107, 0.05); }
+        .danger-zone h4 { color: #ff6b6b; border-bottom: 1px solid rgba(255, 107, 107, 0.3); }
+        
+        /* 新增：跳转页面样式 */
+        #redirect-page { display: none; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center; padding: 20px; }
+        .redirect-content { max-width: 800px; width: 100%; padding: 40px; background-color: var(--card-bg); border-radius: 10px; box-shadow: var(--shadow); }
+        .redirect-content h2 { margin-bottom: 20px; color: var(--text-color); }
+        .redirect-url { display: inline-block; padding: 15px; background-color: rgba(77, 171, 247, 0.1); border-radius: 5px; margin: 20px 0; font-size: 18px; word-break: break-all; color: var(--primary-color); }
+        .countdown { font-size: 24px; margin: 20px 0; color: #ff6b6b; }
+        .redirect-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
+        .redirect-btn { padding: 12px 30px; font-size: 18px; border-radius: 5px; cursor: pointer; border: none; transition: all 0.3s ease; }
+        .go-btn { background-color: var(--primary-color); color: white; }
+        .go-btn:hover { background-color: var(--hover-color); }
+        .back-btn { background-color: #f0f0f0; color: #333; }
+        .back-btn:hover { background-color: #e0e0e0; }
+        
+        @media (max-width: 700px) { 
+            .tab-content .form-group label { margin-left: 0; }
+            .form-control { width: 100%; }
+            .search-form { flex-direction: column; align-items: center; }
+            input[type="submit"] { width: 100%; max-width: 600px; }
+            h1 { font-size: 2rem; }
+            .link-move-group, .link-order-controls { flex-direction: column; align-items: flex-start; margin-top: 5px; }
+            .link-move-group select, .link-order-controls button { margin-bottom: 5px; width: 100%; }
+            .link-edit-row { flex-direction: column; align-items: stretch; }
+            .redirect-content { padding: 20px; }
+            .redirect-buttons { flex-direction: column; }
+            .redirect-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 跳转页面（默认隐藏） -->
+    <div id="redirect-page">
+        <div class="redirect-content">
+            <h2>即将访问外部网站</h2>
+            <p>您即将访问以下网站：</p>
+            <div class="redirect-url" id="redirect-url-display">https://example.com</div>
+            <p>请注意：外部网站的内容不受我们控制，请谨慎访问。</p>
+            <div class="countdown" id="countdown">3秒后自动跳转</div>
+            <div class="redirect-buttons">
+                <button class="redirect-btn go-btn" id="go-btn">继续访问</button>
+                <button class="redirect-btn back-btn" id="back-btn">返回首页</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 原首页内容（默认显示） -->
+    <div id="home-page">
+        <div class="header">
+            <div class="container">
+                <button id="theme-toggle">🌙</button>
+                <button id="settings-btn">⚙️</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="welcome-section">
+                <h1>欢迎！</h1>
+            </div>
+            
+            <div class="search-section">
+                <form id="search-form" class="search-form">
+                    <input type="text" id="search" name="q" placeholder="输入搜索内容或网址" autocomplete="off">
+                    <input type="submit" value="搜索">
+                </form>
+                <p class="note">注：输入网址可直接访问，输入搜索内容将使用搜索引擎</p>
+            </div>
+            
+            <div class="links-section">
+                <div id="quick-links">
+                    <!-- 快速链接将在这里动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 设置面板 -->
+        <div id="settings-panel">
+            <div class="settings-content">
+                <div class="settings-tabs">
+                    <button class="tab-btn active" data-tab="links">快速链接</button>
+                    <button class="tab-btn" data-tab="groups">分组管理</button>
+                    <button class="tab-btn" data-tab="search">搜索引擎</button>
+                    <button class="tab-btn" data-tab="theme">主题设置</button>
+                    <button class="tab-btn" data-tab="data">数据管理</button>
+                </div>
+                
+                <!-- 快速链接管理 -->
+                <div id="links-tab" class="tab-content active">
+                    <h3>管理快速链接</h3>
+                    
+                    <div class="form-group">
+                        <label for="new-link-name">链接名称</label>
+                        <input type="text" id="new-link-name" class="form-control" placeholder="示例">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new-link-url">链接地址</label>
+                        <input type="text" id="new-link-url" class="form-control" placeholder="https://example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="new-link-group">链接分组</label>
+                        <select id="new-link-group" class="form-control">
+                            <option value="默认分组">默认分组</option>
+                            <!-- 现有分组将在这里动态生成 -->
+                        </select>
+                    </div>
+                    
+                    <button id="add-link-btn" class="btn btn-primary">添加链接</button>
+                    
+                    <div id="link-groups">
+                        <!-- 链接分组将在这里动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 分组管理 -->
+                <div id="groups-tab" class="tab-content">
+                    <h3>管理分组</h3>
+                    
+                    <div class="form-group">
+                        <label for="new-group-name">新分组名称</label>
+                        <input type="text" id="new-group-name" class="form-control" placeholder="示例分组">
+                    </div>
+                    
+                    <button id="add-group-btn" class="btn btn-primary">添加分组</button>
+                    
+                    <div id="groups-list" style="margin-top: 20px;">
+                        <!-- 分组列表将在这里动态生成 -->
+                    </div>
+                </div>
+                
+                <!-- 搜索引擎设置 -->
+                <div id="search-tab" class="tab-content">
+                    <h3>选择搜索引擎</h3>
+                    
+                    <div class="search-engine-option">
+                        <input type="radio" id="bing" name="search-engine" value="bing" checked>
+                        <label for="bing">必应 (Bing)</label>
+                    </div>
+                    
+                    <div class="search-engine-option">
+                        <input type="radio" id="baidu" name="search-engine" value="baidu">
+                        <label for="baidu">百度 (Baidu)</label>
+                    </div>
+                    
+                    <div class="search-engine-option">
+                        <input type="radio" id="google" name="search-engine" value="google">
+                        <label for="google">谷歌 (Google)</label>
+                    </div>
+                    
+                    <div class="search-engine-option">
+                        <input type="radio" id="sogou" name="search-engine" value="sogou">
+                        <label for="sogou">搜狗 (Sogou)</label>
+                    </div>
+                    
+                    <div class="search-engine-option">
+                        <input type="radio" id="360" name="search-engine" value="360">
+                        <label for="360">360搜索 (360)</label>
+                    </div>
+                    
+                    <div class="search-engine-option">
+                        <input type="radio" id="yahoo" name="search-engine" value="yahoo">
+                        <label for="yahoo">雅虎 (Yahoo)</label>
+                    </div>
+                    
+                    <div class="search-engine-option">
+                        <input type="radio" id="duckduckgo" name="search-engine" value="duckduckgo">
+                        <label for="duckduckgo">DuckDuckGo</label>
+                    </div>
+                    
+                    <button id="save-search-engine" class="btn btn-primary">保存设置</button>
+                </div>
+                
+                <!-- 主题设置 -->
+                <div id="theme-tab" class="tab-content">
+                    <h3>选择主题</h3>
+                    
+                    <div class="theme-option">
+                        <input type="radio" id="light-theme" name="theme" value="light" checked>
+                        <div class="theme-preview light-preview"></div>
+                        <label for="light-theme">浅色模式</label>
+                    </div>
+                    
+                    <div class="theme-option">
+                        <input type="radio" id="dark-theme" name="theme" value="dark">
+                        <div class="theme-preview dark-preview"></div>
+                        <label for="dark-theme">深色模式</label>
+                    </div>
+                    
+                    <button id="save-theme" class="btn btn-primary">保存主题</button>
+                </div>
+                
+                <!-- 数据管理 -->
+                <div id="data-tab" class="tab-content">
+                    <h3>数据管理</h3>
+                    
+                    <div class="data-management-section">
+                        <h4>导出数据</h4>
+                        <p>将您的所有设置和链接导出为JSON文件，用于备份或迁移到其他设备。</p>
+                        <div style="text-align: center;">
+                            <button id="export-data-btn" class="btn btn-primary">导出数据</button>
+                        </div>
+                    </div>
+                    
+                    <div class="data-management-section">
+                        <h4>导入数据</h4>
+                        <p>从JSON文件导入设置和链接。您可以选择导入方式：</p>
+                        
+                        <div class="import-options">
+                            <div class="import-option">
+                                <input type="radio" id="import-overwrite" name="import-mode" value="overwrite" checked>
+                                <label for="import-overwrite">
+                                    <strong>覆盖模式</strong><br>
+                                    <small>替换所有现有数据，完全使用导入文件的内容</small>
+                                </label>
+                            </div>
+                            
+                            <div class="import-option">
+                                <input type="radio" id="import-merge" name="import-mode" value="merge">
+                                <label for="import-merge">
+                                    <strong>合并模式</strong><br>
+                                    <small>保留现有数据，只添加导入文件中的新数据</small>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="file-input-container">
+                            <label for="import-data-file" class="file-input-label">选择JSON文件</label>
+                            <input type="file" id="import-data-file" accept=".json" class="file-input">
+                            <div id="file-name" class="file-name">未选择文件</div>
+                        </div>
+                        
+                        <div class="import-button-container">
+                            <button id="import-data-btn" class="btn btn-primary">导入数据</button>
+                        </div>
+                    </div>
+                    
+                    <div class="data-management-section danger-zone">
+                        <h4>重置数据</h4>
+                        <p>清除所有设置和链接，恢复到初始状态。此操作不可撤销，请谨慎使用。</p>
+                        <div style="text-align: center;">
+                            <button id="reset-data-btn" class="btn btn-danger">重置数据</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: right; margin-top: 20px;">
+                    <button id="close-settings" class="btn">关闭</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 编辑分组模态框 -->
+        <div id="edit-group-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">编辑分组</div>
+                    <button class="close-btn" id="close-edit-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit-group-name">分组名称</label>
+                        <input type="text" id="edit-group-name" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save-group-btn" class="btn btn-primary">保存</button>
+                    <button id="cancel-edit-btn" class="btn">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 配置数据模型
+        let config = {
+            quickLinks: [],
+            groups: ['默认分组'],
+            searchEngine: 'bing',
+            theme: 'light'
+        };
+        
+        // 当前编辑的分组ID
+        let currentEditGroupId = null;
+        
+        // 当前编辑的链接ID
+        let currentEditLinkId = null;
+        
+        // 跳转相关变量
+        let redirectUrl = '';
+        let countdownTimer = null;
+        let countdownSeconds = 3;
+        
+        // 搜索引擎配置
+        const searchEngines = {
+            bing: { name: '必应', url: 'https://www.bing.com/search', param: 'q' },
+            baidu: { name: '百度', url: 'https://www.baidu.com/s', param: 'wd' },
+            google: { name: '谷歌', url: 'https://www.google.com/search', param: 'q' },
+            sogou: { name: '搜狗', url: 'https://www.sogou.com/web', param: 'query' },
+            360: { name: '360搜索', url: 'https://www.so.com/s', param: 'q' },
+            yahoo: { name: '雅虎', url: 'https://search.yahoo.com/search', param: 'p' },
+            duckduckgo: { name: 'DuckDuckGo', url: 'https://duckduckgo.com/', param: 'q' }
+        };
+        
+        // DOM元素
+        const settingsBtn = document.getElementById('settings-btn');
+        const themeToggle = document.getElementById('theme-toggle');
+        const settingsPanel = document.getElementById('settings-panel');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const quickLinksContainer = document.getElementById('quick-links');
+        const linkGroupsContainer = document.getElementById('link-groups');
+        const addLinkBtn = document.getElementById('add-link-btn');
+        const saveSearchEngineBtn = document.getElementById('save-search-engine');
+        const saveThemeBtn = document.getElementById('save-theme');
+        const searchForm = document.getElementById('search-form');
+        const linkGroupSelect = document.getElementById('new-link-group');
+        const addGroupBtn = document.getElementById('add-group-btn');
+        const newGroupNameInput = document.getElementById('new-group-name');
+        const groupsListContainer = document.getElementById('groups-list');
+        const editGroupModal = document.getElementById('edit-group-modal');
+        const closeEditModalBtn = document.getElementById('close-edit-modal');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const saveGroupBtn = document.getElementById('save-group-btn');
+        const editGroupNameInput = document.getElementById('edit-group-name');
+        const exportDataBtn = document.getElementById('export-data-btn');
+        const importDataBtn = document.getElementById('import-data-btn');
+        const importDataFile = document.getElementById('import-data-file');
+        const resetDataBtn = document.getElementById('reset-data-btn');
+        const fileNameDisplay = document.getElementById('file-name');
+        const homePage = document.getElementById('home-page');
+        const redirectPage = document.getElementById('redirect-page');
+        const redirectUrlDisplay = document.getElementById('redirect-url-display');
+        const countdownDisplay = document.getElementById('countdown');
+        const goBtn = document.getElementById('go-btn');
+        const backBtn = document.getElementById('back-btn');
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadConfig();
+            renderQuickLinks();
+            renderLinkGroups();
+            updateGroupSelect();
+            renderGroupsList();
+            setupEventListeners();
+            applyTheme();
+        });
+        
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 设置按钮点击事件
+            settingsBtn.addEventListener('click', function() {
+                settingsPanel.style.display = 'block';
+            });
+            
+            // 主题切换按钮
+            themeToggle.addEventListener('click', function() {
+                toggleTheme();
+            });
+            
+            // 关闭设置面板
+            closeSettingsBtn.addEventListener('click', function() {
+                settingsPanel.style.display = 'none';
+            });
+            
+            // 点击设置面板外部区域关闭面板
+            settingsPanel.addEventListener('click', function(event) {
+                if (event.target === settingsPanel) {
+                    settingsPanel.style.display = 'none';
+                }
+            });
+            
+            // 选项卡切换
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有活动状态
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // 添加活动状态到当前选项卡
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab') + '-tab';
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // 搜索表单提交事件
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const searchInput = document.getElementById('search');
+                const query = searchInput.value.trim();
+                
+                if (!query) return;
+                
+                // 判断是否为网址
+                if (isURL(query)) {
+                    // 显示跳转页面
+                    showRedirectPage(query);
+                } else {
+                    // 正常搜索
+                    performSearch(query);
+                }
+            });
+            
+            // 添加链接按钮
+            addLinkBtn.addEventListener('click', function() {
+                const name = document.getElementById('new-link-name').value.trim();
+                let url = document.getElementById('new-link-url').value.trim();
+                const group = linkGroupSelect.value || '默认分组';
+                
+                // 自动纠错网址
+                url = autoCorrectUrl(url);
+                
+                if (name && url) {
+                    // 添加链接到配置
+                    config.quickLinks.push({
+                        id: Date.now(), // 使用时间戳作为唯一ID
+                        name: name,
+                        url: url,
+                        group: group,
+                        order: config.quickLinks.filter(link => link.group === group).length // 设置初始顺序
+                    });
+                    
+                    // 保存配置
+                    saveConfig();
+                    
+                    // 重新渲染链接
+                    renderQuickLinks();
+                    renderLinkGroups();
+                    updateGroupSelect();
+                    renderGroupsList();
+                    
+                    // 清空输入框
+                    document.getElementById('new-link-name').value = '';
+                    document.getElementById('new-link-url').value = '';
+                } else {
+                    alert('请填写链接名称和地址！');
+                }
+            });
+            
+            // 保存搜索引擎设置
+            saveSearchEngineBtn.addEventListener('click', function() {
+                const selectedEngine = document.querySelector('input[name="search-engine"]:checked').value;
+                config.searchEngine = selectedEngine;
+                saveConfig();
+                updateSearchForm();
+                alert('搜索引擎设置已保存！');
+            });
+            
+            // 保存主题设置
+            saveThemeBtn.addEventListener('click', function() {
+                const selectedTheme = document.querySelector('input[name="theme"]:checked').value;
+                config.theme = selectedTheme;
+                saveConfig();
+                applyTheme();
+                alert('主题设置已保存！');
+            });
+            
+            // 添加分组按钮
+            addGroupBtn.addEventListener('click', function() {
+                const groupName = newGroupNameInput.value.trim();
+                if (groupName) {
+                    if (config.groups.includes(groupName)) {
+                        alert('分组名称已存在！');
+                        return;
+                    }
+                    
+                    config.groups.push(groupName);
+                    saveConfig();
+                    updateGroupSelect();
+                    renderGroupsList();
+                    newGroupNameInput.value = '';
+                } else {
+                    alert('请输入分组名称！');
+                }
+            });
+            
+            // 关闭编辑分组模态框
+            closeEditModalBtn.addEventListener('click', function() {
+                editGroupModal.style.display = 'none';
+            });
+            
+            cancelEditBtn.addEventListener('click', function() {
+                editGroupModal.style.display = 'none';
+            });
+            
+            // 保存分组编辑
+            saveGroupBtn.addEventListener('click', function() {
+                const newName = editGroupNameInput.value.trim();
+                if (newName && currentEditGroupId !== null) {
+                    const oldName = config.groups[currentEditGroupId];
+                    
+                    // 更新分组名称
+                    config.groups[currentEditGroupId] = newName;
+                    
+                    // 更新所有使用该分组的链接
+                    config.quickLinks.forEach(link => {
+                        if (link.group === oldName) {
+                            link.group = newName;
+                        }
+                    });
+                    
+                    saveConfig();
+                    updateGroupSelect();
+                    renderLinkGroups();
+                    renderQuickLinks();
+                    renderGroupsList();
+                    
+                    editGroupModal.style.display = 'none';
+                }
+            });
+            
+            // 导出数据
+            exportDataBtn.addEventListener('click', function() {
+                exportData();
+            });
+            
+            // 文件选择显示
+            importDataFile.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    fileNameDisplay.textContent = this.files[0].name;
+                } else {
+                    fileNameDisplay.textContent = '未选择文件';
+                }
+            });
+            
+            // 导入数据
+            importDataBtn.addEventListener('click', function() {
+                if (importDataFile.files.length === 0) {
+                    alert('请选择要导入的文件！');
+                    return;
+                }
+                
+                const importMode = document.querySelector('input[name="import-mode"]:checked').value;
+                const file = importDataFile.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const importedConfig = JSON.parse(e.target.result);
+                        
+                        // 验证导入的数据结构
+                        if (!importedConfig.quickLinks || !importedConfig.groups || !importedConfig.searchEngine || !importedConfig.theme) {
+                            alert('无效的数据文件！');
+                            return;
+                        }
+                        
+                        let message = '';
+                        if (importMode === 'overwrite') {
+                            message = '覆盖模式将替换所有现有设置和链接，确定要继续吗？';
+                        } else {
+                            message = '合并模式将保留现有数据，只添加新数据，确定要继续吗？';
+                        }
+                        
+                        if (confirm(message)) {
+                            if (importMode === 'overwrite') {
+                                // 覆盖模式：完全替换现有配置
+                                config = importedConfig;
+                            } else {
+                                // 合并模式：保留现有数据，只添加新数据
+                                
+                                // 合并分组
+                                importedConfig.groups.forEach(group => {
+                                    if (!config.groups.includes(group)) {
+                                        config.groups.push(group);
+                                    }
+                                });
+                                
+                                // 合并链接
+                                importedConfig.quickLinks.forEach(importedLink => {
+                                    // 检查是否已存在相同名称和URL的链接
+                                    const existingLink = config.quickLinks.find(link => 
+                                        link.name === importedLink.name && link.url === importedLink.url
+                                    );
+                                    
+                                    if (!existingLink) {
+                                        // 如果不存在，添加新链接
+                                        config.quickLinks.push({
+                                            ...importedLink,
+                                            id: Date.now() + Math.random(), // 生成新ID避免冲突
+                                            order: config.quickLinks.filter(link => link.group === importedLink.group).length
+                                        });
+                                    }
+                                });
+                                
+                                // 更新搜索引擎和主题设置（使用导入的设置）
+                                config.searchEngine = importedConfig.searchEngine;
+                                config.theme = importedConfig.theme;
+                            }
+                            
+                            saveConfig();
+                            loadConfig();
+                            renderQuickLinks();
+                            renderLinkGroups();
+                            updateGroupSelect();
+                            renderGroupsList();
+                            applyTheme();
+                            alert('数据导入成功！');
+                            
+                            // 重置文件选择
+                            importDataFile.value = '';
+                            fileNameDisplay.textContent = '未选择文件';
+                        }
+                    } catch (error) {
+                        alert('文件解析失败：' + error.message);
+                    }
+                };
+                
+                reader.readAsText(file);
+            });
+            
+            // 重置数据
+            resetDataBtn.addEventListener('click', function() {
+                if (confirm('确定要重置所有数据吗？这将删除所有设置和链接，恢复到初始状态。')) {
+                    localStorage.removeItem('browserHomeConfig');
+                    location.reload();
+                }
+            });
+            
+            // 跳转页面按钮事件
+            goBtn.addEventListener('click', function() {
+                redirectToUrl();
+            });
+            
+            backBtn.addEventListener('click', function() {
+                cancelRedirect();
+            });
+        }
+        
+        // 替换中文标点符号为英文标点符号
+        function fixChinesePunctuation(str) {
+            if (!str) return str;
+            
+            // 中文冒号（全角）替换为英文冒号
+            str = str.replace(/：/g, ':');
+            
+            // 中文斜杠（全角）替换为英文斜杠
+            str = str.replace(/／/g, '/');
+            
+            // 中文句号（全角）替换为英文句号（用于可能的情况）
+            str = str.replace(/。/g, '.');
+            
+            // 中文逗号（全角）替换为英文逗号
+            str = str.replace(/，/g, ',');
+            
+            // 中文问号（全角）替换为英文问号
+            str = str.replace(/？/g, '?');
+            
+            // 中文感叹号（全角）替换为英文感叹号
+            str = str.replace(/！/g, '!');
+            
+            // 中文括号（全角）替换为英文括号
+            str = str.replace(/（/g, '(');
+            str = str.replace(/）/g, ')');
+            
+            // 中文方括号（全角）替换为英文方括号
+            str = str.replace(/［/g, '[');
+            str = str.replace(/］/g, ']');
+            
+            // 中文大括号（全角）替换为英文大括号
+            str = str.replace(/｛/g, '{');
+            str = str.replace(/｝/g, '}');
+            
+            // 中文尖括号（全角）替换为英文尖括号
+            str = str.replace(/〈/g, '<');
+            str = str.replace(/〉/g, '>');
+            
+            // 中文分号（全角）替换为英文分号
+            str = str.replace(/；/g, ';');
+            
+            // 中文百分号（全角）替换为英文百分号
+            str = str.replace(/％/g, '%');
+            
+            // 中文空格（全角）替换为英文空格
+            str = str.replace(/　/g, ' ');
+            
+            return str;
+        }
+        
+        // 判断是否为URL
+        function isURL(str) {
+            // 先修正中文标点
+            str = fixChinesePunctuation(str);
+            
+            // 移除前后空格
+            str = str.trim();
+            
+            // 检查是否包含空格（网址不应包含空格）
+            if (str.includes(' ')) {
+                return false;
+            }
+            
+            // 检查是否包含常见域名后缀
+            const domainPatterns = [
+                /\.com(\/|$)/i,
+                /\.cn(\/|$)/i,
+                /\.net(\/|$)/i,
+                /\.org(\/|$)/i,
+                /\.edu(\/|$)/i,
+                /\.gov(\/|$)/i,
+                /\.top(\/|$)/i,
+                /\.xyz(\/|$)/i,
+                /\.site(\/|$)/i,
+                /\.shop(\/|$)/i,
+                /\.app(\/|$)/i,
+                /\.io(\/|$)/i,
+                /\.ai(\/|$)/i,
+                /\.dev(\/|$)/i,
+                /\.me(\/|$)/i
+            ];
+            
+            // 检查是否以协议开头
+            const protocolPattern = /^(https?|ftp|file):\/\//i;
+            
+            // 检查是否以www开头
+            const wwwPattern = /^www\./i;
+            
+            // 检查是否包含点号且不以点号开头或结尾
+            if (str.includes('.') && !str.startsWith('.') && !str.endsWith('.')) {
+                // 如果有协议或www开头，直接认为是URL
+                if (protocolPattern.test(str) || wwwPattern.test(str)) {
+                    return true;
+                }
+                
+                // 检查是否匹配域名后缀
+                for (const pattern of domainPatterns) {
+                    if (pattern.test(str)) {
+                        return true;
+                    }
+                }
+                
+                // 如果包含点号且看起来像是域名格式（例如baidu.com）
+                const parts = str.split('.');
+                if (parts.length >= 2) {
+                    const lastPart = parts[parts.length - 1].toLowerCase();
+                    // 检查最后一部分是否是常见的顶级域名或看起来像是域名
+                    if (lastPart.length >= 2 && lastPart.length <= 6 && /^[a-z]+$/.test(lastPart)) {
+                        // 检查倒数第二部分是否有内容
+                        if (parts[parts.length - 2].length >= 1) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        // 显示跳转页面
+        function showRedirectPage(url) {
+            // 自动纠正网址（包含中文标点修正）
+            redirectUrl = autoCorrectUrl(url);
+            
+            // 更新显示
+            redirectUrlDisplay.textContent = redirectUrl;
+            countdownSeconds = 3;
+            countdownDisplay.textContent = `${countdownSeconds}秒后自动跳转`;
+            
+            // 显示跳转页面，隐藏首页
+            homePage.style.display = 'none';
+            redirectPage.style.display = 'flex';
+            
+            // 开始倒计时
+            startCountdown();
+        }
+        
+        // 开始倒计时
+        function startCountdown() {
+            // 清除之前的计时器
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+            }
+            
+            // 更新倒计时显示
+            countdownTimer = setInterval(function() {
+                countdownSeconds--;
+                countdownDisplay.textContent = `${countdownSeconds}秒后自动跳转`;
+                
+                if (countdownSeconds <= 0) {
+                    clearInterval(countdownTimer);
+                    redirectToUrl();
+                }
+            }, 1000);
+        }
+        
+        // 跳转到目标网址
+        function redirectToUrl() {
+            // 清除计时器
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+            }
+            
+            // 在新标签页中打开
+            window.open(redirectUrl, '_blank');
+            
+            // 返回首页
+            cancelRedirect();
+        }
+        
+        // 取消跳转，返回首页
+        function cancelRedirect() {
+            // 清除计时器
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+            }
+            
+            // 隐藏跳转页面，显示首页
+            redirectPage.style.display = 'none';
+            homePage.style.display = 'block';
+            
+            // 清空搜索框
+            document.getElementById('search').value = '';
+        }
+        
+        // 执行搜索
+        function performSearch(query) {
+            const engine = searchEngines[config.searchEngine];
+            const searchUrl = `${engine.url}?${engine.param}=${encodeURIComponent(query)}`;
+            
+            // 在新标签页中打开搜索结果
+            window.open(searchUrl, '_blank');
+            
+            // 清空搜索框
+            document.getElementById('search').value = '';
+        }
+        
+        // 导出数据
+        function exportData() {
+            const dataStr = JSON.stringify(config, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = '浏览器主页数据备份_' + new Date().toISOString().split('T')[0] + '.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert('数据导出成功！');
+        }
+        
+        // 自动纠错网址
+        function autoCorrectUrl(url) {
+            if (!url) return url;
+            
+            // 首先修正中文标点
+            url = fixChinesePunctuation(url);
+            
+            // 移除前后空格
+            url = url.trim();
+            
+            // 如果没有协议，添加https://
+            if (!/^https?:\/\//i.test(url)) {
+                // 检查是否有类似 "http:／／" 或 "https:／／" 的情况
+                if (/^https?:／／/i.test(url)) {
+                    // 替换中文斜杠为英文斜杠
+                    url = url.replace(/^https?:／／/i, function(match) {
+                        return match.replace(/／／/g, '//');
+                    });
+                } else {
+                    url = 'https://' + url;
+                }
+            }
+            
+            // 确保网址格式正确
+            try {
+                new URL(url);
+            } catch (e) {
+                // 如果URL无效，尝试添加www.前缀
+                if (!/^www\./i.test(url)) {
+                    const correctedUrl = url.replace(/^https?:\/\//i, 'https://www.');
+                    try {
+                        new URL(correctedUrl);
+                        url = correctedUrl;
+                    } catch (e2) {
+                        // 如果仍然无效，保持原样
+                    }
+                }
+            }
+            
+            return url;
+        }
+        
+        // 切换主题
+        function toggleTheme() {
+            config.theme = config.theme === 'light' ? 'dark' : 'light';
+            saveConfig();
+            applyTheme();
+        }
+        
+        // 应用主题
+        function applyTheme() {
+            if (config.theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeToggle.textContent = '🌙';
+            }
+            
+            // 更新主题选择器
+            const themeRadio = document.querySelector(`input[value="${config.theme}"]`);
+            if (themeRadio) {
+                themeRadio.checked = true;
+            }
+        }
+        
+        // 更新分组选择下拉框
+        function updateGroupSelect() {
+            // 清空现有选项（保留默认分组）
+            while (linkGroupSelect.options.length > 0) {
+                linkGroupSelect.remove(0);
+            }
+            
+            // 添加所有分组
+            config.groups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group;
+                option.textContent = group;
+                linkGroupSelect.appendChild(option);
+            });
+            
+            // 更新所有移动分组下拉列表
+            updateAllMoveGroupSelects();
+        }
+        
+        // 更新所有移动分组下拉列表
+        function updateAllMoveGroupSelects() {
+            document.querySelectorAll('.link-move-group select').forEach(select => {
+                const currentValue = select.value;
+                
+                // 清空现有选项
+                while (select.options.length > 0) {
+                    select.remove(0);
+                }
+                
+                // 添加所有分组
+                config.groups.forEach(group => {
+                    const option = document.createElement('option');
+                    option.value = group;
+                    option.textContent = group;
+                    if (group === currentValue) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+            });
+        }
+        
+        // 渲染分组列表
+        function renderGroupsList() {
+            groupsListContainer.innerHTML = '';
+            
+            if (config.groups.length === 0) {
+                groupsListContainer.innerHTML = '<p>暂无分组</p>';
+                return;
+            }
+            
+            config.groups.forEach((group, index) => {
+                // 计算该分组下的链接数量
+                const linkCount = config.quickLinks.filter(link => link.group === group).length;
+                
+                const groupItem = document.createElement('div');
+                groupItem.className = 'group-item';
+                
+                const groupInfo = document.createElement('div');
+                groupInfo.innerHTML = `
+                    <div style="font-weight: bold;">${group}</div>
+                    <div class="group-link-count">包含 ${linkCount} 个链接</div>
+                `;
+                
+                const groupActions = document.createElement('div');
+                groupActions.className = 'group-actions';
+                
+                // 编辑按钮
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn';
+                editBtn.textContent = '编辑';
+                editBtn.addEventListener('click', function() {
+                    currentEditGroupId = index;
+                    editGroupNameInput.value = group;
+                    editGroupModal.style.display = 'block';
+                });
+                
+                // 删除按钮
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-danger';
+                deleteBtn.textContent = '删除';
+                deleteBtn.addEventListener('click', function() {
+                    if (group === '默认分组') {
+                        alert('默认分组不能删除！');
+                        return;
+                    }
+                    
+                    if (confirm(`确定要删除分组 "${group}" 吗？该分组下的 ${linkCount} 个链接将被移动到默认分组。`)) {
+                        // 将该分组下的所有链接移动到默认分组
+                        config.quickLinks.forEach(link => {
+                            if (link.group === group) {
+                                link.group = '默认分组';
+                                // 重置顺序
+                                link.order = config.quickLinks.filter(l => l.group === '默认分组').length;
+                            }
+                        });
+                        
+                        // 删除分组
+                        config.groups.splice(index, 1);
+                        
+                        saveConfig();
+                        updateGroupSelect();
+                        renderLinkGroups();
+                        renderQuickLinks();
+                        renderGroupsList();
+                    }
+                });
+                
+                groupActions.appendChild(editBtn);
+                groupActions.appendChild(deleteBtn);
+                
+                groupItem.appendChild(groupInfo);
+                groupItem.appendChild(groupActions);
+                
+                groupsListContainer.appendChild(groupItem);
+            });
+        }
+        
+        // 渲染快速链接
+        function renderQuickLinks() {
+            quickLinksContainer.innerHTML = '';
+            
+            if (config.quickLinks.length === 0) {
+                quickLinksContainer.innerHTML = '<p>暂无快速链接，请在设置中添加</p>';
+                return;
+            }
+            
+            // 按分组组织链接
+            const groups = {};
+            config.quickLinks.forEach(link => {
+                if (!groups[link.group]) {
+                    groups[link.group] = [];
+                }
+                groups[link.group].push(link);
+            });
+            
+            // 渲染每个分组的链接
+            for (const groupName in groups) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'link-group-display';
+                
+                // 添加分组标题
+                const groupTitle = document.createElement('h4');
+                groupTitle.textContent = groupName;
+                groupDiv.appendChild(groupTitle);
+                
+                // 对分组内的链接按顺序排序
+                groups[groupName].sort((a, b) => (a.order || 0) - (b.order || 0));
+                
+                // 添加分组内的链接
+                groups[groupName].forEach(link => {
+                    const linkElement = document.createElement('a');
+                    linkElement.href = link.url;
+                    linkElement.textContent = link.name;
+                    groupDiv.appendChild(linkElement);
+                    groupDiv.appendChild(document.createTextNode(' '));
+                });
+                
+                quickLinksContainer.appendChild(groupDiv);
+            }
+        }
+        
+        // 渲染链接分组管理界面
+        function renderLinkGroups() {
+            linkGroupsContainer.innerHTML = '';
+            
+            if (config.quickLinks.length === 0) {
+                linkGroupsContainer.innerHTML = '<p>暂无快速链接</p>';
+                return;
+            }
+            
+            // 按分组组织链接
+            const groups = {};
+            config.quickLinks.forEach(link => {
+                if (!groups[link.group]) {
+                    groups[link.group] = [];
+                }
+                groups[link.group].push(link);
+            });
+            
+            // 渲染每个分组
+            for (const groupName in groups) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'link-group';
+                
+                // 分组标题
+                const groupHeader = document.createElement('div');
+                groupHeader.className = 'link-group-header';
+                
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'link-group-title';
+                groupTitle.textContent = groupName;
+                groupHeader.appendChild(groupTitle);
+                
+                groupDiv.appendChild(groupHeader);
+                
+                // 对分组内的链接按顺序排序
+                groups[groupName].sort((a, b) => (a.order || 0) - (b.order || 0));
+                
+                // 分组内的链接
+                groups[groupName].forEach((link, index) => {
+                    const linkItem = document.createElement('div');
+                    linkItem.className = 'link-item';
+                    
+                    // 检查当前链接是否正在编辑
+                    const isEditing = currentEditLinkId === link.id;
+                    
+                    if (isEditing) {
+                        // 编辑模式
+                        const editForm = document.createElement('div');
+                        editForm.className = 'link-edit-form';
+                        
+                        const nameRow = document.createElement('div');
+                        nameRow.className = 'link-edit-row';
+                        
+                        const nameLabel = document.createElement('label');
+                        nameLabel.textContent = '名称：';
+                        nameLabel.style.minWidth = '50px';
+                        
+                        const nameInput = document.createElement('input');
+                        nameInput.type = 'text';
+                        nameInput.className = 'link-edit-input';
+                        nameInput.value = link.name;
+                        
+                        nameRow.appendChild(nameLabel);
+                        nameRow.appendChild(nameInput);
+                        
+                        const urlRow = document.createElement('div');
+                        urlRow.className = 'link-edit-row';
+                        
+                        const urlLabel = document.createElement('label');
+                        urlLabel.textContent = '网址：';
+                        urlLabel.style.minWidth = '50px';
+                        
+                        const urlInput = document.createElement('input');
+                        urlInput.type = 'text';
+                        urlInput.className = 'link-edit-input';
+                        urlInput.value = link.url;
+                        
+                        urlRow.appendChild(urlLabel);
+                        urlRow.appendChild(urlInput);
+                        
+                        const buttonRow = document.createElement('div');
+                        buttonRow.className = 'link-edit-row';
+                        buttonRow.style.justifyContent = 'flex-end';
+                        
+                        const saveBtn = document.createElement('button');
+                        saveBtn.className = 'btn btn-success';
+                        saveBtn.textContent = '保存';
+                        saveBtn.addEventListener('click', function() {
+                            const newName = nameInput.value.trim();
+                            let newUrl = urlInput.value.trim();
+                            
+                            // 自动纠错网址
+                            newUrl = autoCorrectUrl(newUrl);
+                            
+                            if (newName && newUrl) {
+                                link.name = newName;
+                                link.url = newUrl;
+                                saveConfig();
+                                currentEditLinkId = null;
+                                renderLinkGroups();
+                                renderQuickLinks();
+                            } else {
+                                alert('请填写链接名称和地址！');
+                            }
+                        });
+                        
+                        const cancelBtn = document.createElement('button');
+                        cancelBtn.className = 'btn';
+                        cancelBtn.textContent = '取消';
+                        cancelBtn.addEventListener('click', function() {
+                            currentEditLinkId = null;
+                            renderLinkGroups();
+                        });
+                        
+                        buttonRow.appendChild(cancelBtn);
+                        buttonRow.appendChild(saveBtn);
+                        
+                        editForm.appendChild(nameRow);
+                        editForm.appendChild(urlRow);
+                        editForm.appendChild(buttonRow);
+                        
+                        linkItem.appendChild(editForm);
+                    } else {
+                        // 正常显示模式
+                        const linkInfo = document.createElement('div');
+                        linkInfo.innerHTML = `<strong>${link.name}</strong> - ${link.url}`;
+                        
+                        const linkActions = document.createElement('div');
+                        linkActions.style.display = 'flex';
+                        linkActions.style.alignItems = 'center';
+                        
+                        // 编辑按钮
+                        const editBtn = document.createElement('button');
+                        editBtn.className = 'btn btn-warning';
+                        editBtn.textContent = '编辑';
+                        editBtn.addEventListener('click', function() {
+                            currentEditLinkId = link.id;
+                            renderLinkGroups();
+                        });
+                        
+                        // 链接排序控制
+                        const orderControls = document.createElement('div');
+                        orderControls.className = 'link-order-controls';
+                        
+                        const moveUpBtn = document.createElement('button');
+                        moveUpBtn.className = 'btn';
+                        moveUpBtn.textContent = '↑';
+                        moveUpBtn.title = '上移';
+                        moveUpBtn.disabled = index === 0;
+                        moveUpBtn.addEventListener('click', function() {
+                            moveLinkUp(link.id);
+                        });
+                        
+                        const moveDownBtn = document.createElement('button');
+                        moveDownBtn.className = 'btn';
+                        moveDownBtn.textContent = '↓';
+                        moveDownBtn.title = '下移';
+                        moveDownBtn.disabled = index === groups[groupName].length - 1;
+                        moveDownBtn.addEventListener('click', function() {
+                            moveLinkDown(link.id);
+                        });
+                        
+                        orderControls.appendChild(moveUpBtn);
+                        orderControls.appendChild(moveDownBtn);
+                        
+                        // 移动链接分组功能
+                        const moveGroupDiv = document.createElement('div');
+                        moveGroupDiv.className = 'link-move-group';
+                        
+                        const groupSelect = document.createElement('select');
+                        // 添加所有分组选项
+                        config.groups.forEach(group => {
+                            const option = document.createElement('option');
+                            option.value = group;
+                            option.textContent = group;
+                            if (group === link.group) {
+                                option.selected = true;
+                            }
+                            groupSelect.appendChild(option);
+                        });
+                        
+                        const moveBtn = document.createElement('button');
+                        moveBtn.className = 'btn';
+                        moveBtn.textContent = '移动';
+                        moveBtn.addEventListener('click', function() {
+                            const newGroup = groupSelect.value;
+                            if (newGroup !== link.group) {
+                                link.group = newGroup;
+                                // 重置顺序
+                                link.order = config.quickLinks.filter(l => l.group === newGroup).length;
+                                saveConfig();
+                                renderLinkGroups();
+                                renderQuickLinks();
+                                renderGroupsList();
+                            }
+                        });
+                        
+                        moveGroupDiv.appendChild(groupSelect);
+                        moveGroupDiv.appendChild(moveBtn);
+                        
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'btn btn-danger';
+                        deleteBtn.textContent = '删除';
+                        deleteBtn.addEventListener('click', function() {
+                            deleteLink(link.id);
+                        });
+                        
+                        linkActions.appendChild(editBtn);
+                        linkActions.appendChild(orderControls);
+                        linkActions.appendChild(moveGroupDiv);
+                        linkActions.appendChild(deleteBtn);
+                        
+                        linkItem.appendChild(linkInfo);
+                        linkItem.appendChild(linkActions);
+                    }
+                    
+                    groupDiv.appendChild(linkItem);
+                });
+                
+                linkGroupsContainer.appendChild(groupDiv);
+            }
+        }
+        
+        // 上移链接
+        function moveLinkUp(linkId) {
+            const link = config.quickLinks.find(l => l.id === linkId);
+            if (!link) return;
+            
+            const groupLinks = config.quickLinks.filter(l => l.group === link.group)
+                                                .sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            const currentIndex = groupLinks.findIndex(l => l.id === linkId);
+            if (currentIndex <= 0) return;
+            
+            // 交换顺序
+            const prevLink = groupLinks[currentIndex - 1];
+            const tempOrder = link.order;
+            link.order = prevLink.order;
+            prevLink.order = tempOrder;
+            
+            saveConfig();
+            renderLinkGroups();
+            renderQuickLinks();
+        }
+        
+        // 下移链接
+        function moveLinkDown(linkId) {
+            const link = config.quickLinks.find(l => l.id === linkId);
+            if (!link) return;
+            
+            const groupLinks = config.quickLinks.filter(l => l.group === link.group)
+                                                .sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            const currentIndex = groupLinks.findIndex(l => l.id === linkId);
+            if (currentIndex >= groupLinks.length - 1) return;
+            
+            // 交换顺序
+            const nextLink = groupLinks[currentIndex + 1];
+            const tempOrder = link.order;
+            link.order = nextLink.order;
+            nextLink.order = tempOrder;
+            
+            saveConfig();
+            renderLinkGroups();
+            renderQuickLinks();
+        }
+        
+        // 删除链接
+        function deleteLink(id) {
+            if (confirm('确定要删除这个链接吗？')) {
+                config.quickLinks = config.quickLinks.filter(link => link.id !== id);
+                saveConfig();
+                renderQuickLinks();
+                renderLinkGroups();
+                updateGroupSelect();
+                renderGroupsList();
+            }
+        }
+        
+        // 更新搜索表单
+        function updateSearchForm() {
+            // 现在表单由JavaScript处理，所以不需要更新action
+            // 但仍然需要更新搜索引擎配置
+            const engineRadio = document.querySelector(`input[value="${config.searchEngine}"]`);
+            if (engineRadio) {
+                engineRadio.checked = true;
+            }
+        }
+        
+        // 保存配置到本地存储
+        function saveConfig() {
+            localStorage.setItem('browserHomeConfig', JSON.stringify(config));
+        }
+        
+        // 从本地存储加载配置
+        function loadConfig() {
+            const savedConfig = localStorage.getItem('browserHomeConfig');
+            if (savedConfig) {
+                config = JSON.parse(savedConfig);
+                
+                // 为旧版本数据添加ID和order属性
+                let needsUpdate = false;
+                config.quickLinks.forEach((link, index) => {
+                    if (!link.id) {
+                        link.id = Date.now() + Math.random();
+                        needsUpdate = true;
+                    }
+                    if (typeof link.order === 'undefined') {
+                        link.order = index;
+                        needsUpdate = true;
+                    }
+                });
+                
+                // 确保有默认分组
+                if (!config.groups || config.groups.length === 0) {
+                    config.groups = ['默认分组'];
+                    needsUpdate = true;
+                }
+                
+                // 确保有主题设置
+                if (!config.theme) {
+                    config.theme = 'light';
+                    needsUpdate = true;
+                }
+                
+                if (needsUpdate) {
+                    saveConfig();
+                }
+                
+                // 更新搜索引擎选择
+                const engineRadio = document.querySelector(`input[value="${config.searchEngine}"]`);
+                if (engineRadio) {
+                    engineRadio.checked = true;
+                }
+                updateSearchForm();
+                
+                // 更新主题选择
+                const themeRadio = document.querySelector(`input[value="${config.theme}"]`);
+                if (themeRadio) {
+                    themeRadio.checked = true;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
